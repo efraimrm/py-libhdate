@@ -78,16 +78,14 @@ class Zmanim(BaseClass):
         _LOGGER.debug("Resetting timezone to UTC for calculations")
         self.time = location.timezone.localize(self.time).astimezone(pytz.utc)
 
+        self.sunrise, self.sunset = self._get_utc_sun_time_deg(90.8333)
+
     def __unicode__(self):
         """Return a Unicode representation of Zmanim."""
-        return u"".join(
-            [
-                u"{} - {}\n".format(
-                    zman.description[self.hebrew], self.zmanim[zman.zman].time()
-                )
-                for zman in htables.ZMANIM
-            ]
-        )
+        return u"".join([
+            u"{} - {}\n".format(
+                zman.description[self.hebrew],
+                self.zmanim(zman.zman).time()) for zman in htables.ZMANIM])
 
     def __repr__(self):
         """Return a representation of Zmanim for programmatic use."""
@@ -99,23 +97,24 @@ class Zmanim(BaseClass):
             self.hebrew,
         )
 
-    @property
-    def utc_zmanim(self):
-        """Return a dictionary of the zmanim in UTC time format."""
-        basetime = dt.datetime.combine(self.date, dt.time()).replace(tzinfo=pytz.utc)
-        _LOGGER.debug("Calculating UTC zmanim for %r", basetime)
-        return {
-            key: basetime + dt.timedelta(minutes=value)
-            for key, value in self.get_utc_sun_time_full().items()
-        }
+    def __getattr__(self, key):
+        """"Sanitize getattr calls to only allow zmanim keys."""
+        if key in any([zman.zman for zman in htables.ZMANIM]):
+            return getattr(self, key)
+        else:
+            raise AttributeError("%s is not a valid zman", key)
 
-    @property
-    def zmanim(self):
-        """Return a dictionary of the zmanim the object represents."""
-        return {
-            key: value.astimezone(self.location.timezone)
-            for key, value in self.utc_zmanim.items()
-        }
+    def utc_zman(self, key):
+        """Return the zman value in UTC time format for the given key."""
+        basetime = dt.datetime.combine(self.date, dt.time()).replace(
+            tzinfo=pytz.utc)
+        _LOGGER.debug("Calculating UTC zmanim for %r", basetime)
+        
+        return basetime + dt.timedelta(minutes=getattr(self, key))
+
+    def zmanim(self, key):
+        """Return the zman value for the given key."""
+        return utc_zman(key).astimezone(self.location.timezone)
 
     @property
     def candle_lighting(self):
@@ -135,18 +134,18 @@ class Zmanim(BaseClass):
         # Otherwise, if today is Friday or erev Yom Tov, return candle
         # lighting.
         if tomorrow.is_shabbat or tomorrow.is_yom_tov:
-            return self.zmanim["sunset"] - dt.timedelta(
-                minutes=self.candle_lighting_offset
-            )
+            return (self.zmanim("sunset")
+                    - dt.timedelta(minutes=self.candle_lighting_offset))
         return None
 
     @property
     def _havdalah_datetime(self):
         """Compute the havdalah time based on settings."""
         if self.havdalah_offset == 0:
-            return self.zmanim["three_stars"]
+            return self.zmanim("motsei_shabbat")
         # Otherwise, use the offset.
-        return self.zmanim["sunset"] + dt.timedelta(minutes=self.havdalah_offset)
+        return (self.zmanim("sunset")
+                + dt.timedelta(minutes=self.havdalah_offset))
 
     @property
     def havdalah(self):
@@ -270,39 +269,70 @@ class Zmanim(BaseClass):
             int(720.0 - 4.0 * longitude + hour_angle - eqtime),
         )
 
-    def get_utc_sun_time_full(self):
-        """Return a list of Jewish times for the given location."""
-        # sunset and rise time
-        sunrise, sunset = self._get_utc_sun_time_deg(90.833)
+    @property
+    def shaa_zmanit_gra(self):
+        return (self.sunset - self.sunrise) // 12
 
-        # shaa zmanit by gara, 1/12 of light time
-        sun_hour = (sunset - sunrise) // 12
-        midday = (sunset + sunrise) // 2
+    @property
+    def shaa_zmanit_mga(self):
+        return (self.midday - self.alot_hashachar) / 6
 
-        # get times of the different sun angles
-        first_light, _ = self._get_utc_sun_time_deg(106.1)
-        talit, _ = self._get_utc_sun_time_deg(101.0)
-        _, first_stars = self._get_utc_sun_time_deg(96.0)
-        _, three_stars = self._get_utc_sun_time_deg(98.5)
-        mga_sunhour = (midday - first_light) / 6
+    @property
+    def midday(self):
+        return (self.sunset + self.sunrise) // 2
 
-        res = dict(
-            sunrise=sunrise,
-            sunset=sunset,
-            sun_hour=sun_hour,
-            midday=midday,
-            first_light=first_light,
-            talit=talit,
-            first_stars=first_stars,
-            three_stars=three_stars,
-            plag_mincha=sunset - 1.25 * sun_hour,
-            stars_out=sunset + 18.0 * sun_hour / 60.0,
-            small_mincha=sunrise + 9.5 * sun_hour,
-            big_mincha=sunrise + 6.5 * sun_hour,
-            mga_end_shma=first_light + mga_sunhour * 3.0,
-            gra_end_shma=sunrise + sun_hour * 3.0,
-            mga_end_tfila=first_light + mga_sunhour * 4.0,
-            gra_end_tfila=sunrise + sun_hour * 4.0,
-            midnight=midday + 12 * 60.0,
-        )
-        return res
+    @property
+    def alot_hashachar(self):
+        result, _ = self._get_utc_sun_time_deg(106.1)
+        return result
+    
+    @property
+    def misheyakir(self):
+        result, _ = self._get_utc_sun_time_deg(101.0)
+        return result
+    
+    @property
+    def tset_hakochavim(self):
+        _, result = self._get_utc_sun_time_deg(96.0)
+        return result
+    
+    @property
+    def motsei_shabbat(self):
+        _, result = self._get_utc_sun_time_deg(98.5)
+        return result
+    
+    @property
+    def plag_mincha(self):
+        return self.sunset - 1.25 * self.shaa_zmanit_gra
+
+    @property
+    def stars_out(self):
+        return self.sunset + 18. * self.shaa_zmanit_gra / 60.
+
+    @property
+    def mincha_ktana(self):
+        return self.sunrise + 9.5 * self.shaa_zmanit_gra
+
+    @property
+    def mincha_gedola(self):
+        return self.sunrise + 6.5 * self.shaa_zmanit_gra
+
+    @property
+    def end_shma_mga(self):
+        return self.alot_hashachar + self.shaa_zmanit_mga * 3.
+
+    @property
+    def end_shma_gra(self):
+        return self.sunrise + self.shaa_zmanit_gra * 3.
+
+    @property
+    def end_tfila_mga(self):
+        return self.alot_hashachar + self.shaa_zmanit_mga * 4.
+
+    @property
+    def end_tfila_gra(self):
+        return self.sunrise + self.shaa_zmanit_gra * 4.
+
+    @property
+    def midnight(self):
+        return self.midday + 12 * 60.
