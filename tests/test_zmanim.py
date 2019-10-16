@@ -47,10 +47,7 @@ class TestZmanim(object):
         else:
             other_date = this_date.replace(year=other_year) + shift_day
 
-        assert (
-            Zmanim(this_date).get_utc_sun_time_full()
-            == Zmanim(other_date).get_utc_sun_time_full()
-        )
+        assert Zmanim(this_date).alot_hashahar == Zmanim(other_date).alot_hashahar
 
     def test_using_tzinfo(self):
         day = datetime.date(2018, 9, 8)
@@ -72,11 +69,11 @@ class TestZmanim(object):
         )
 
         assert Zmanim(date=day, location=location_tz_str).zmanim[
-            "first_stars"
+            "tset_hakochavim"
         ].time() == datetime.time(19, 48)
 
         assert Zmanim(date=day, location=location).zmanim[
-            "first_stars"
+            "tset_hakochavim"
         ].time() == datetime.time(19, 48)
 
     # Times are assumed for NYC.

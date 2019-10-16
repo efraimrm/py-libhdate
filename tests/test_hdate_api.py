@@ -64,9 +64,9 @@ class TestZmanimAPI(object):
             captured.out == u"עלות השחר - 04:53:00\n"
             u"זמן טלית ותפילין - 05:19:00\n"
             u"הנץ החמה - 06:09:00\n"
-            u'סוף זמן ק"ש מג"א - 08:46:00\n'
+            u'סוף זמן ק"ש מג"א - 08:44:00\n'
             u'סוף זמן ק"ש הגר"א - 09:24:00\n'
-            u'סוף זמן תפילה מג"א - 10:03:40\n'
+            u'סוף זמן תפילה מג"א - 10:01:00\n'
             u'סוף זמן תפילה גר"א - 10:29:00\n'
             u"חצות היום - 12:39:00\n"
             u"מנחה גדולה - 13:11:30\n"
@@ -74,6 +74,7 @@ class TestZmanimAPI(object):
             u"פלג מנחה - 17:48:45\n"
             u"שקיעה - 19:10:00\n"
             u"צאת הככבים - 19:35:00\n"
+            u"לילה - 19:48:00\n"
             u"חצות הלילה - 00:39:00\n\n"
         )
 
@@ -86,9 +87,9 @@ class TestZmanimAPI(object):
             captured.out == "Alot HaShachar - 04:53:00\n"
             "Talit & Tefilin's time - 05:19:00\n"
             "Sunrise - 06:09:00\n"
-            'Shema EOT MG"A - 08:46:00\n'
+            'Shema EOT MG"A - 08:44:00\n'
             'Shema EOT GR"A - 09:24:00\n'
-            'Tefila EOT MG"A - 10:03:40\n'
+            'Tefila EOT MG"A - 10:01:00\n'
             'Tefila EOT GR"A - 10:29:00\n'
             "Midday - 12:39:00\n"
             "Big Mincha - 13:11:30\n"
@@ -96,6 +97,7 @@ class TestZmanimAPI(object):
             "Plag Mincha - 17:48:45\n"
             "Sunset - 19:10:00\n"
             "First stars - 19:35:00\n"
+            "Night - 19:48:00\n"
             "Midnight - 00:39:00\n\n"
         )
 

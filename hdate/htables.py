@@ -800,20 +800,21 @@ HOLIDAYS = (
 
 ZMAN = namedtuple("ZMAN", "zman, description")
 ZMANIM = (
-    ZMAN("first_light", LANG(u"Alot HaShachar", u"עלות השחר")),
-    ZMAN("talit", LANG(u"Talit & Tefilin's time", u"זמן טלית ותפילין")),
+    ZMAN("alot_hashahar", LANG(u"Alot HaShachar", u"עלות השחר")),
+    ZMAN("misheyakir", LANG(u"Talit & Tefilin's time", u"זמן טלית ותפילין")),
     ZMAN("sunrise", LANG(u"Sunrise", u"הנץ החמה")),
     ZMAN("mga_end_shma", LANG(u'Shema EOT MG"A', u'סוף זמן ק"ש מג"א')),
     ZMAN("gra_end_shma", LANG(u'Shema EOT GR"A', u'סוף זמן ק"ש הגר"א')),
     ZMAN("mga_end_tfila", LANG(u'Tefila EOT MG"A', u'סוף זמן תפילה מג"א')),
     ZMAN("gra_end_tfila", LANG(u'Tefila EOT GR"A', u'סוף זמן תפילה גר"א')),
-    ZMAN("midday", LANG(u"Midday", u"חצות היום")),
+    ZMAN("gra_midday", LANG(u"Midday", u"חצות היום")),
     ZMAN("big_mincha", LANG(u"Big Mincha", u"מנחה גדולה")),
     ZMAN("small_mincha", LANG(u"Small Mincha", u"מנחה קטנה")),
     ZMAN("plag_mincha", LANG(u"Plag Mincha", u"פלג מנחה")),
     ZMAN("sunset", LANG(u"Sunset", u"שקיעה")),
-    ZMAN("first_stars", LANG(u"First stars", u"צאת הככבים")),
-    ZMAN("midnight", LANG(u"Midnight", u"חצות הלילה")),
+    ZMAN("tset_hakochavim", LANG(u"First stars", u"צאת הככבים")),
+    ZMAN("night", LANG(u"Night", u"לילה")),
+    ZMAN("gra_midnight", LANG(u"Midnight", u"חצות הלילה")),
 )
 
 # The first few cycles were only 2702 blatt. After that it became 2711. Even with
