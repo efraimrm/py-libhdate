@@ -273,68 +273,84 @@ class Zmanim(BaseClass):
 
     @property
     def alot_hashahar(self):
+        """Calculate minutes from now in UTC until alot hashahar."""
         first_light, _ = self._get_utc_sun_time_deg(106.1)
         return first_light
 
     @property
     def misheyakir(self):
+        """Calculate minutes from now in UTC until misheyakir."""
         talit, _ = self._get_utc_sun_time_deg(101.0)
         return talit
 
     @property
     def tset_hakochavim(self):
+        """Calculate minutes from now in UTC until tset."""
         _, first_stars = self._get_utc_sun_time_deg(96.0)
         return first_stars
 
     @property
     def night(self):
+        """Calculate minutes from now in UTC until night."""
         _, three_stars = self._get_utc_sun_time_deg(98.5)
         return three_stars
 
     @property
     def gra_sun_hour(self):
+        """Calculate length of a sun hour according to the Gr"a."""
         return (self.sunset - self.sunrise) // 12
 
     @property
     def gra_midday(self):
+        """Calculate the middle of the day."""
         return (self.sunset + self.sunrise) // 2
 
     @property
     def mga_sun_hour(self):
+        """Calculate length of a sun hour according to Mg"a."""
         return (self.gra_midday - self.alot_hashahar) // 6
 
     @property
     def plag_mincha(self):
+        """Calculate minutes from now in UTC until plag."""
         return self.sunset - 1.25 * self.gra_sun_hour
 
     @property
     def stars_out(self):
+        """Calculate minutes from now in UTC until tset."""
         return self.sunset + 18.0 * self.gra_sun_hour / 60.0
 
     @property
     def small_mincha(self):
+        """Calculate minutes from now in UTC until mincha ktana."""
         return self.sunrise + 9.5 * self.gra_sun_hour
 
     @property
     def big_mincha(self):
+        """Calculate minutes from now in UTC until mincha gdola."""
         return self.sunrise + 6.5 * self.gra_sun_hour
 
     @property
     def mga_end_shma(self):
+        """Calculate minutes from now in UTC until end of shma according to Mg"a."""
         return self.alot_hashahar + self.mga_sun_hour * 3.0
 
     @property
     def gra_end_shma(self):
+        """Calculate minutes from now in UTC until end of shma according to Gr"a."""
         return self.sunrise + self.gra_sun_hour * 3.0
 
     @property
     def mga_end_tfila(self):
+        """Calculate minutes from now in UTC until end of tfila according to Mg"a."""
         return self.alot_hashahar + self.mga_sun_hour * 4.0
 
     @property
     def gra_end_tfila(self):
+        """Calculate minutes from now in UTC until end of tfila according to Gr"a."""
         return self.sunrise + self.gra_sun_hour * 4.0
 
     @property
     def gra_midnight(self):
+        """Calculate minutes from now in UTC until midnight according to Gr"a."""
         return self.gra_midday + 12 * 60.0
