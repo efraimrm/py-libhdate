@@ -21,6 +21,7 @@ from hdate.date import HDate
 _LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-instance-attributes, too-many-public-methods
 class Zmanim(BaseClass):
     """Return Jewish day times.
 
