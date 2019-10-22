@@ -105,10 +105,8 @@ class Zmanim(BaseClass):
     def utc_zmanim(self):
         """Return a dictionary of the zmanim in UTC time format."""
         basetime = dt.datetime.combine(self.date, dt.time()).replace(tzinfo=pytz.utc)
-        _LOGGER.debug("Calculating UTC zmanim for %r", basetime)
         return {
-            zman.zman: basetime + dt.timedelta(minutes=getattr(self, zman.zman))
-            for zman in htables.ZMANIM
+            zman.zman: basetime + getattr(self, zman.zman) for zman in htables.ZMANIM
         }
 
     @property
@@ -267,16 +265,21 @@ class Zmanim(BaseClass):
         # get sunset/rise times in utc wall clock in minutes from 00:00 time
         # sunrise / sunset
         longitude = self.location.longitude
-        return (
-            int(720.0 - 4.0 * longitude - hour_angle - eqtime),
-            int(720.0 - 4.0 * longitude + hour_angle - eqtime),
+        rise_time, set_time = (
+            dt.timedelta(minutes=int(720.0 - 4.0 * longitude - hour_angle - eqtime)),
+            dt.timedelta(minutes=int(720.0 - 4.0 * longitude + hour_angle - eqtime)),
         )
+
+        _LOGGER.debug("Degree %.2f: Rise time %s Set time %s", deg, rise_time, set_time)
+
+        return rise_time, set_time
 
     @property
     def alot_hashahar(self):
         """Calculate minutes from now in UTC until alot hashahar."""
-        first_light, _ = self._get_utc_sun_time_deg(106.1)
-        return first_light
+        value, _ = self._get_utc_sun_time_deg(106.1)
+        _LOGGER.debug("Alot Hashahar: %s", value)
+        return value
 
     @property
     def misheyakir(self):
@@ -298,18 +301,22 @@ class Zmanim(BaseClass):
 
     @property
     def gra_sun_hour(self):
-        """Calculate length of a sun hour according to the Gr"a."""
-        return (self.sunset - self.sunrise) // 12
+        """Calculate length of a sun hour according to the Gr"a in seconds."""
+        return (self.sunset - self.sunrise) / 12.0
 
     @property
     def gra_midday(self):
         """Calculate the middle of the day."""
-        return (self.sunset + self.sunrise) // 2
+        value = (self.sunset + self.sunrise) / 2.0
+        _LOGGER.debug("GR'A midday: %s", value)
+        return value
 
     @property
     def mga_sun_hour(self):
-        """Calculate length of a sun hour according to Mg"a."""
-        return (self.gra_midday - self.alot_hashahar) // 6
+        """Calculate length of a sun hour according to Mg"a in seconds."""
+        value = (self.gra_midday - self.alot_hashahar) / 6.0
+        _LOGGER.debug("Sun hour according to Mg'a: %s", value)
+        return value
 
     @property
     def plag_mincha(self):
@@ -354,4 +361,4 @@ class Zmanim(BaseClass):
     @property
     def gra_midnight(self):
         """Calculate minutes from now in UTC until midnight according to Gr"a."""
-        return self.gra_midday + 12 * 60.0
+        return self.gra_midday + dt.timedelta(hours=12)

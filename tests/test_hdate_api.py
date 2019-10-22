@@ -64,18 +64,18 @@ class TestZmanimAPI(object):
             captured.out == u"עלות השחר - 04:53:00\n"
             u"זמן טלית ותפילין - 05:19:00\n"
             u"הנץ החמה - 06:09:00\n"
-            u'סוף זמן ק"ש מג"א - 08:44:00\n'
-            u'סוף זמן ק"ש הגר"א - 09:24:00\n'
-            u'סוף זמן תפילה מג"א - 10:01:00\n'
-            u'סוף זמן תפילה גר"א - 10:29:00\n'
-            u"חצות היום - 12:39:00\n"
-            u"מנחה גדולה - 13:11:30\n"
-            u"מנחה קטנה - 16:26:30\n"
-            u"פלג מנחה - 17:48:45\n"
+            u'סוף זמן ק"ש מג"א - 08:46:15\n'
+            u'סוף זמן ק"ש הגר"א - 09:24:15\n'
+            u'סוף זמן תפילה מג"א - 10:04:00\n'
+            u'סוף זמן תפילה גר"א - 10:29:20\n'
+            u"חצות היום - 12:39:30\n"
+            u"מנחה גדולה - 13:12:02.500000\n"
+            u"מנחה קטנה - 16:27:17.500000\n"
+            u"פלג מנחה - 17:48:38.750000\n"
             u"שקיעה - 19:10:00\n"
             u"צאת הככבים - 19:35:00\n"
             u"לילה - 19:48:00\n"
-            u"חצות הלילה - 00:39:00\n\n"
+            u"חצות הלילה - 00:39:30\n\n"
         )
 
     def test_readme_example_english(self, capsys):
@@ -87,18 +87,18 @@ class TestZmanimAPI(object):
             captured.out == "Alot HaShachar - 04:53:00\n"
             "Talit & Tefilin's time - 05:19:00\n"
             "Sunrise - 06:09:00\n"
-            'Shema EOT MG"A - 08:44:00\n'
-            'Shema EOT GR"A - 09:24:00\n'
-            'Tefila EOT MG"A - 10:01:00\n'
-            'Tefila EOT GR"A - 10:29:00\n'
-            "Midday - 12:39:00\n"
-            "Big Mincha - 13:11:30\n"
-            "Small Mincha - 16:26:30\n"
-            "Plag Mincha - 17:48:45\n"
+            'Shema EOT MG"A - 08:46:15\n'
+            'Shema EOT GR"A - 09:24:15\n'
+            'Tefila EOT MG"A - 10:04:00\n'
+            'Tefila EOT GR"A - 10:29:20\n'
+            "Midday - 12:39:30\n"
+            "Big Mincha - 13:12:02.500000\n"
+            "Small Mincha - 16:27:17.500000\n"
+            "Plag Mincha - 17:48:38.750000\n"
             "Sunset - 19:10:00\n"
             "First stars - 19:35:00\n"
             "Night - 19:48:00\n"
-            "Midnight - 00:39:00\n\n"
+            "Midnight - 00:39:30\n\n"
         )
 
     def test_issur_melacha_weekday(self):
