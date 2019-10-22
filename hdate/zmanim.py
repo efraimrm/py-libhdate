@@ -215,8 +215,8 @@ class Zmanim(BaseClass):
         These routines are based on Jean Meeus's book Astronomical Algorithms.
         """
         gama = 0  # location of sun in yearly cycle in radians
-        eqtime = 0  # difference betwen sun noon and clock noon
-        decl = 0  # sun declanation
+        eqtime = 0  # difference between sun noon and clock noon
+        decl = 0  # sun declination
         hour_angle = 0  # solar hour angle
         sunrise_angle = math.pi * deg / 180.0  # sun angle at sunrise/set
 
@@ -226,7 +226,7 @@ class Zmanim(BaseClass):
         # get radians of sun orbit around earth =)
         gama = 2.0 * math.pi * ((day_of_year - 1) / 365.0)
 
-        # get the diff betwen suns clock and wall clock in minutes
+        # get the difference between suns clock and wall clock in minutes
         eqtime = 229.18 * (
             0.000075
             + 0.001868 * math.cos(gama)
@@ -235,7 +235,7 @@ class Zmanim(BaseClass):
             - 0.040849 * math.sin(2.0 * gama)
         )
 
-        # calculate suns declanation at the equater in radians
+        # calculate suns declination at the equator in radians
         decl = (
             0.006918
             - 0.399912 * math.cos(gama)
@@ -249,7 +249,7 @@ class Zmanim(BaseClass):
         # we use radians, ratio is 2pi/360
         latitude = math.pi * self.location.latitude / 180.0
 
-        # the sun real time diff from noon at sunset/rise in radians
+        # the sun real time difference from noon at sunset/rise in radians
         try:
             hour_angle = math.acos(
                 math.cos(sunrise_angle) / (math.cos(latitude) * math.cos(decl))
@@ -259,15 +259,15 @@ class Zmanim(BaseClass):
         except ValueError:
             return -720, -720
 
-        # we use minutes, ratio is 1440min/2pi
+        # we use minutes, ratio is 1440 minutes / 2pi
         hour_angle = 720.0 * hour_angle / math.pi
 
-        # get sunset/rise times in utc wall clock in minutes from 00:00 time
+        # get sunset/rise times in UTC wall clock in minutes from 00:00 time
         # sunrise / sunset
         longitude = self.location.longitude
         rise_time, set_time = (
-            dt.timedelta(minutes=int(720.0 - 4.0 * longitude - hour_angle - eqtime)),
-            dt.timedelta(minutes=int(720.0 - 4.0 * longitude + hour_angle - eqtime)),
+            dt.timedelta(minutes=720.0 - 4.0 * longitude - hour_angle - eqtime),
+            dt.timedelta(minutes=720.0 - 4.0 * longitude + hour_angle - eqtime),
         )
 
         _LOGGER.debug("Degree %.2f: Rise time %s Set time %s", deg, rise_time, set_time)
